@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset=utf-8>
+	<title>My first Three.js app</title>
+	<style>
+		body {
+			margin: 0;
+			overflow-x: hidden;
+			margin: 0;
+			padding: 0;
+		}
+
+		canvas {
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+			background-color: black;
+			display: block;
+		}
+
+		.controls {
+			color: white;
+			position: fixed;
+			left: 20pt;
+			bottom: 20pt;
+			display: none;
+		}
+	</style>
+</head>
+
+<body>
+
+
+	<div class="controls">
+		<div id="curvePosition"></div>
+	</div>
+
+
+	<!-- Shaders -->
+
+	<script type="x-shader/x-vertex" id="vertexShader">
+	// create a shared variable for the
+// VS and FS containing the normal
+varying vec3 vNormal;
+varying vec3 vPosition;
+
+void main() {
+
+  // set the vNormal value with
+  // the attribute value passed
+  // in by Three.js
+  vNormal = normal;
+	vPosition=position;
+
+  gl_Position = projectionMatrix *
+                modelViewMatrix *
+                vec4(position, 1.0);
+}
+
+	</script>
+
+	<script type="x-shader/x-fragment" id="fragmentShader">
+
+	// same name and type as VS
+varying vec3 vNormal;
+varying vec3 vPosition;
+
+void main() {
+
+  // calc the dot product and clamp
+  // 0 -> 1 rather than -1 -> 1
+  vec3 light = vec3(0.5, 0.2, 1.0);
+
+  // ensure it's normalized
+  light = normalize(light);
+
+  // calculate the dot product of
+  // the light to the vertex normal
+  float dProd = max(0.0,
+                    dot(vNormal, light));
+
+vec3 neVPosition = normalize(vPosition);
+
+  // feed into our frag colour
+  gl_FragColor = vec4(dProd, // R
+                      dProd, // G
+                      dProd, // B
+                      1);  // A
+
+}
+
+</script>
+
+
+
+	<script src="assets/threejs/three.js"></script>
+	<script src="assets/threejs/OrbitControls.js"></script>
+	<script src="assets/threejs/BabylonLoader.js"></script>
+	<script src="assets/threejs/STLLoader.js"></script>
+	<script src="assets/sandbox/Basic.js"></script>
+	<script>
+		// Our Javascript will go here.
+	</script>
+</body>
+
+</html>
